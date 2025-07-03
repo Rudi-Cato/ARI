@@ -1,0 +1,4 @@
+/rosout_agg
+/amcl_pose
+/robot_pose
+
