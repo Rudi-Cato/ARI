@@ -1,0 +1,25 @@
+session: lincari
+init_cmd: |
+  export DISPLAY=:0
+  export ROBOT_NAME=ARI
+  export ARI_WS=${HOME}/workspaces/ARI_ws
+  export MONGO_DIR=${ARI_WS}/db
+  export ROBOT_IP="10.68.0.1"
+  export ROS_MASTER_URI=http://${ROBOT_IP}:11311
+  
+  source ${ARI_WS}/devel/setup.bash
+windows:
+  - name: roscore
+    tags: []
+    panes:
+      - htop
+      - ping $ROBOT_IP
+    check: "rostopic list >/dev/null"
+  - name: data_collection
+    tags: []
+    panes:
+      - 'mkdir -p $MONGO_DIR/$ROBOT_NAME && roslaunch mongodb_store mongodb_store.launch db_path:=$MONGO_DIR/$ROBOT_NAME machine:=localhost'
+      - 'rosrun lincari_logging lincari_logger.sh'
+  # - name: record_interactions
+  #   panes:
+  #     - 'rosrun lindimp_logging interaction_dataset_collector.py _topics:="[/tf_static, /tf, /robot_pose, /PNP/goal, /PNP/result, /task_executor/events, /head_xtion/rgb/camera_info, /head_xtion/depth/camera_info, /head_xtion/rgb/image_rect_color, /head_xtion/depth/image_rect_raw]"'
